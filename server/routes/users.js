@@ -6,39 +6,33 @@ router.get('/', (req, res) => {
     User
         .find()
         .then(user => {
-            res.status(200).json(user);
+           user ? res.status(200).json(user) : res.status(404).send();
     });
 });
-router.get('/api/users/', (req, res) => {
-    User
-        .find()
-        .then(users => {
-            res.status(200).json(users);
-    });
-});
-router.get('/api/users/:id', (req, res) => {
+
+router.get('/:id', (req, res) => {
     User
         .findById(req.params.id)
-        .then(user => {
-            res.status(200).json(user);
-        });
-});
-router.post('/api/users/', (req, res) => {
-    let newUser = new User(req.body);
-    newUser
-        .save(req.params.id)
-        .then(user => {
-            res.status(200).json(user);
-        });
-});
-router.put('/api/users/:id', (req, res) => {
-    User
-        .findByIdAndUpdate(req.params.id)
         .then(user => {
             user ? res.status(200).json(user) : res.status(404).send();
         });
 });
-router.delete('/api/users/:id', (req, res) => {
+router.post('/', (req, res) => {
+    let newUser = new User(req.body);
+    newUser
+        .save(req.params.id)
+        .then(user => {
+            res.status(201).json(user);
+        });
+});
+router.put('/:id', (req, res) => {
+    User
+        .findByIdAndUpdate(req.params.id)
+        .then(user => {
+            user ? res.status(204).json(user) : res.status(404).send();
+        });
+});
+router.delete('/:id', (req, res) => {
     User
         .findByIdAndRemove(req.params.id)
         .then(deletedUser => {

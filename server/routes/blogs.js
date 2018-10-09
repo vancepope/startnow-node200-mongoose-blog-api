@@ -2,47 +2,48 @@ const express = require('express');
 const router = express.Router();
 const Blog = require('../models/Blog');
 
-router.get('/api/blogs/', (req, res) => {
+router.get('/', (req, res) => {
     Blog
         .find()
         .then(blogs => {
-            res.status(200).json(blogs);
+           blogs ? res.status(200).json(blogs) : res.status(404).send();
     });
 });
-router.get('/api/blogs/featured', (req, res) => {
-    User
-        .where()
-        .then(users => {
-            res.status(200).json(users);
+router.get('/featured', (req, res) => {
+    Blog
+        .where({ blogs: 'featured' })
+        .then(blog => {
+            blog ? res.status(200).json(blog) : res.status(404).send();
     });
 });
-router.get('/api/blogs/:id', (req, res) => {
-    User
+router.get('/:id', (req, res) => {
+    Blog
         .findById(req.params.id)
         .then(blog => {
-            res.status(200).json(blog);
+            blog ? res.status(200).json(blog) : res.status(404).send();
         });
 });
-router.post('/api/blogs', (req, res) => {
+router.post('/', (req, res) => {
     let newBlog = new Blog(req.body);
     newBlog
         .save(req.params.id)
         .then(blog => {
-            res.status(200).json(blog);
+            blog ? res.status(201).json(blog) : res.status(404).send();;
         });
 });
-router.put('/api/blogs/:id', (req, res) => {
-    User
-        .findByIdAndUpdate(req.params.id)
+router.put('/:id', (req, res) => {
+    Blog
+        .findByIdAndUpdate(req.params.id, { $set: req.body })
         .then(blog => {
-            blog ? res.status(200).json(blog) : res.status(404).send();
+            blog ? res.status(204).json(blog) : res.status(404).send();
         });
 });
-router.delete('/api/blogs/:id', (req, res) => {
-    User
+router.delete('/:id', (req, res) => {
+    Blog
         .findByIdAndRemove(req.params.id)
         .then(blog => {
             blog ? res.status(200).json(blog) : res.status(404).send();
+            done();
         });
 });
 module.exports = router;
